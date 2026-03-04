@@ -1,5 +1,5 @@
-# Name of your module
-obj-m += ziram_core.o
+# Name of module
+obj-m += main.o
 
 # Path to the kernel build directory
 KDIR := /lib/modules/$(shell uname -r)/build
