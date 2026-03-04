@@ -24,4 +24,4 @@ jobs:
         make
 
     - name: Check Module Info
-      run: modinfo ziram_core.ko
+      run: modinfo main.ko
