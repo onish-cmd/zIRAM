@@ -25,3 +25,11 @@ jobs:
 
     - name: Check Module Info
       run: modinfo main.ko
+
+    - name: Upload zIRAM Kernel Module
+      uses: actions/upload-artifact@v4
+      with:
+        name: ziram-ko
+        path: |
+          main.ko
+          Module.symvers
