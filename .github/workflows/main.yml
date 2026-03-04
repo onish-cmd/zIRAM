@@ -19,9 +19,9 @@ jobs:
         sudo apt-get update
         sudo apt-get install -y clang llvm make linux-headers-$(uname -r)
 
-    - name: Compile with Clang
+    - name: Compile with GCC
       run: |
-        make LLVM=1 CC=clang
+        make
 
     - name: Check Module Info
       run: modinfo ziram_core.ko
