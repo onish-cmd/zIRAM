@@ -5,6 +5,8 @@
 #include <linux/highmem.h>
 #include <linux/string.h>
 #include <linux/mm.h>
+#include <linux/bio.h>
+#include <linux/kprobes.h>
 #include "lut.h"
 
 MODULE_LICENSE("GPL");
@@ -78,6 +80,7 @@ static int handler_pre(struct kprobe *p, struct pt_regs *regs) {
 
     // log the hijack
     printk_ratelimited(KERN_INFO "zIRAM Hijack: Intercepted Page, Entropy: %u\n", entropy);
+    ziram_triage_decision(entropy);
 
     kunmap_atomic(data);
     return 0;
