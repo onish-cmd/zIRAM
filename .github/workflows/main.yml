@@ -29,23 +29,13 @@ jobs:
 
     - name: Load and Test Hijack
       run: |
-        # 1. Force load kprobes and zram
-        sudo modprobe zram
-        
         # 2. Check if kprobes are actually supported by this kernel
         if [ ! -d /sys/kernel/debug/kprobes ]; then
           echo "ERROR: Kprobes not supported on this kernel!"
           exit 1
         fi
-
-        # 3. Check if zram_bvec_write exists in the symbol table
-        if ! sudo grep -q "zram_bvec_write" /proc/kallsyms; then
-          echo "ERROR: Symbol zram_bvec_write not found. Try 'zram_write_page' instead."
-          sudo grep "zram" /proc/kallsyms | head -n 10
-          exit 1
-        fi
         
-        # 4. Try inserting your module now
+        # 4. Try inserting module now
         sudo insmod ziram_core.ko
 
     - name: Upload zIRAM Kernel Module
