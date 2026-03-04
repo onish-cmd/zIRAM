@@ -61,3 +61,47 @@ int ziram_write_page(struct page *page) {
     kunmap_atomic(data); // close the window
     return 0;
 }
+
+static int handler_pre(struct kprobe *p, struct pt_regs *regs) {
+    struct bio_vec *bvec = (struct bio_vec *)regs->si;
+    struct page *page = bvec->bv_page;
+    unsigned char *data;
+    uint32_t entropy;
+
+    if (!page) return 0;
+
+    // HIJACK
+    data = kmap_atomic(page);
+    
+    // calculate the real entropy of the live data
+    entropy = calc_entropy(data);
+
+    // log the hijack
+    printk_ratelimited(KERN_INFO "zIRAM Hijack: Intercepted Page, Entropy: %u\n", entropy);
+
+    kunmap_atomic(data);
+    return 0;
+}
+
+static struct kprobe kp = {
+    .symbol_name = "zram_bvec_write",
+    .pre_handler = handler_pre,
+};
+
+static int __init ziram_init(void) {
+    int ret = register_kprobe(&kp);
+    if (ret < 0) {
+        pr_err("zIRAM: kprobe failed, returned %d\n", ret);
+        return ret;
+    }
+    pr_info("zIRAM: Hijack Active on zram_bvec_write\n");
+    return 0;
+}
+
+static void __exit ziram_exit(void) {
+    unregister_kprobe(&kp);
+    pr_info("zIRAM: Hijack Removed\n");
+}
+
+module_init(ziram_init);
+module_exit(ziram_exit);

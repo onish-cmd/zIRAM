@@ -27,6 +27,7 @@ jobs:
     - name: Check Module Info
       run: modinfo ziram_core.ko
 
+
     - name: Load and Test Module
       run: |
         sudo insmod ziram_core.ko
