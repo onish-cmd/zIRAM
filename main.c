@@ -51,7 +51,7 @@ int ziram_write_page(struct page *page) {
     uint32_t entropy;
 
     // entropy of the live page
-    entropy = calculate_entropy(data);
+    entropy = calc_entropy(data);
 
     // make the triage decision
     if (entropy > (7 << 10)) {
