@@ -22,14 +22,28 @@ jobs:
     - name: Compile with GCC
       run: |
         make
+        mv main.ko ziram_core.ko
 
     - name: Check Module Info
-      run: modinfo main.ko
+      run: modinfo ziram_core.ko
+
+    - name: Load and Test Module
+      run: |
+        sudo insmod ziram_core.ko
+        
+        echo "--- Kernel Logs after insmod ---"
+        sudo dmesg | tail -n 20
+        
+        lsmod | grep ziram_core
+
+        sudo rmmod ziram_core
+        echo "--- Kernel Logs after rmmod ---"
+        sudo dmesg | tail -n 10
 
     - name: Upload zIRAM Kernel Module
       uses: actions/upload-artifact@v4
       with:
         name: ziram-ko
         path: |
-          main.ko
+          ziram_core.ko
           Module.symvers
