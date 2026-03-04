@@ -1,0 +1,27 @@
+name: zIRAM Kernel Build
+
+on:
+  push:
+    branches: [ "main" ]
+  pull_request:
+    branches: [ "main" ]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout Code
+      uses: actions/checkout@v4
+
+    - name: Install Dependencies
+      run: |
+        sudo apt-get update
+        sudo apt-get install -y clang llvm make linux-headers-$(uname -r)
+
+    - name: Compile with Clang
+      run: |
+        make LLVM=1 CC=clang
+
+    - name: Check Module Info
+      run: modinfo ziram_core.ko
