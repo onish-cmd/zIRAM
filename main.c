@@ -35,6 +35,7 @@
 #include <linux/kernel_read_file.h>
 
 #include "lut.h"
+#include "zram_drv.h"
 
 // Formula: H = 12 - (1/4096) * sum(c * log2(c))
 static uint32_t calc_entropy(const unsigned char *page) {
